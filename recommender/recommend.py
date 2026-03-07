@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import psycopg2
 import numpy as np
+import os
 
 from .features import (
     compute_distance_score,
@@ -13,18 +14,20 @@ from .weights import compute_weights
 from .scoring import compute_scores
 
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="savepulse",
-    user="postgres",
-    password="password",
-    port=5432
-)
+def get_connection():
+    return psycopg2.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        database=os.getenv("DB_NAME", "savepulse"),
+        user=os.getenv("DB_USER", "postgres"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        port=os.getenv("DB_PORT", 5432),
+    )
 
+conn = get_connection()
 
 def get_request(request_id):
 
-    query = f"""
+    query = """
     SELECT *
     FROM my_schema.requests
     WHERE request_id = %s
@@ -82,7 +85,7 @@ def recommend(request_id):
 
     hospitals = get_hospitals()
 
-    hospitals = filter_hospitals(hospitals, req["emergency_type"])
+    hospitals = filter_hospitals(hospitals, req["emergency_type"]).copy()
     
     if hospitals.empty:
         return []

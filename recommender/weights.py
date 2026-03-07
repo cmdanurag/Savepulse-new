@@ -6,7 +6,7 @@ def compute_weights(feature_matrix):
     feature_matrix shape: (num_hospitals, num_features)
 
     columns correspond to:
-    [distance_score, availability_score, rating_score, facility_score]
+    [distance_score, availability_score, rating_score]
     """
 
     variances = np.var(feature_matrix, axis=0)
