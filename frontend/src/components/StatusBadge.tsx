@@ -2,7 +2,14 @@ import type { AvailabilityStatus } from "@/data/hospitals";
 
 interface StatusBadgeProps {
   status: AvailabilityStatus;
+  size?: "sm" | "md" | "lg";
 }
+
+const sizeClasses: Record<string, string> = {
+  sm: "px-2 py-0.5 text-[10px]",
+  md: "px-2.5 py-1 text-xs",
+  lg: "px-3 py-1.5 text-sm",
+};
 
 const config: Record<
   AvailabilityStatus,
@@ -26,13 +33,32 @@ const config: Record<
     bg: "bg-red-100 dark:bg-red-900/40",
     text: "text-red-700 dark:text-red-300",
   },
+  dispatching: {
+    label: "Dispatching",
+    dot: "bg-orange-500",
+    bg: "bg-orange-100 dark:bg-orange-900/40",
+    text: "text-orange-700 dark:text-orange-300",
+  },
+  idle: {
+    label: "Idle",
+    dot: "bg-gray-400",
+    bg: "bg-gray-100 dark:bg-gray-800/40",
+    text: "text-gray-600 dark:text-gray-400",
+  },
+  arriving: {
+    label: "Arriving",
+    dot: "bg-blue-500",
+    bg: "bg-blue-100 dark:bg-blue-900/40",
+    text: "text-blue-700 dark:text-blue-300",
+  },
 };
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
+export default function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
   const { label, dot, bg, text } = config[status];
+  const sz = sizeClasses[size];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${bg} ${text}`}
+      className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${sz} ${bg} ${text}`}
     >
       <span className={`h-2 w-2 rounded-full ${dot}`} />
       {label}
